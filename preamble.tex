@@ -1,0 +1,68 @@
+\usepackage{epsfig}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amstext}
+\usepackage{amsthm}
+\usepackage{enumitem}                     
+\usepackage{fullpage}
+\usepackage{hyperref}
+\usepackage{multicol}
+\usepackage{natbib}
+\usepackage{titlesec}
+\usepackage{xspace}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+}
+
+\titleformat*{\section}{\bfseries}
+\titleformat*{\subsection}{\bfseries}
+\titleformat*{\subsubsection}{\bfseries}
+\titleformat*{\paragraph}{\bfseries}
+\titleformat*{\subparagraph}{\bfseries}
+
+\newcommand{\R}{\ensuremath{\mathbb R}}
+\newcommand{\C}{\ensuremath{\mathbb C}}
+\newcommand{\N}{\ensuremath{\mathbb N}}
+\newcommand{\F}{\ensuremath{\mathbb F}}
+\newcommand{\K}{\ensuremath{\mathbb K}}
+\newcommand{\Z}{\ensuremath{\mathbb Z}}
+\newcommand{\B}{\ensuremath{\mathcal B}}
+\renewcommand{\H}{\ensuremath{\mathcal H}}
+\newcommand{\EV}{\ensuremath{\mathbb E}}
+\newcommand{\Var}{\text{Var}}
+\newcommand{\Cov}{\text{Cov}}
+\newcommand{\e}{\epsilon}
+\newcommand{\E}{\exists}
+\newcommand{\sse}{\subseteq}
+\newcommand{\union}{\cup}
+\newcommand{\ra}{\rightarrow}
+\newcommand{\ceil}[1]{\ensuremath{\left\lceil#1\right\rceil}}
+\newcommand{\floor}[1]{\ensuremath{\left\lfloor#1\right\rfloor}}
+\newcommand{\ip}[2]{\left\langle #1, #2\right\rangle}
+\DeclareMathOperator*{\argmax}{arg\,max\ }
+\DeclareMathOperator*{\argmin}{arg\,min\ }
+\DeclareMathOperator*{\st}{s.t.}
+
+\theoremstyle{plain}
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{lem}{Lemma}[section]
+\newtheorem{prop}{Proposition}[section]
+\newtheorem{coro}{Corollary}[section]
+\newtheorem{obs}{Observation}[section]
+
+\theoremstyle{definition}
+\newtheorem{defn}{Definition}[section]
+
+\theoremstyle{remark}
+\newtheorem{exm}{Example}[section]
+\newtheorem{exc}{Exercise}[section]
+\newtheorem{rem}{Remark}[section]
+\newtheorem{question}{Question}
+\newtheorem{answer}{Answer}
+
+\setenumerate[0]{label=(\alph*)}
