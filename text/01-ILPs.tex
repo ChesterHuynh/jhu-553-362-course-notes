@@ -1,0 +1,123 @@
+\section{(Binary) Integer Linear Programming}
+
+\subsection{Review of Linear Programming}
+\label{subsec:review-of-linear-programming}
+
+Recall that linear programs are a class of problems that have been well studied and can be solved quickly (in terms of asymptotics, this means they can be solved in polynomial time).
+
+\begin{defn}[Linear program]
+\label{defn:linear-program}
+    Given $A \in \R^{m\times n}$, $b \in \R^m$, and $c \in \R^n$, a \textit{linear program} can be written in either standard form or canonical (also called symmetric) form as follows:
+    \begin{multicols}{2}
+        \noindent
+        \begin{equation*}
+        \begin{array}{lllr@{}l@{}l@{}}
+        \text{standard form} 
+            & (LP)  & \min  & c^T x &           \\
+            &       & \st   & Ax    & {}= b     \\
+            &       &       &  x    & {}\ge \Vec{0}
+        \end{array}
+        \end{equation*}
+    
+        \noindent
+        \begin{equation*}
+        \begin{array}{lllr@{}l@{}l@{}}
+        \text{canonical form} 
+            & (LP)  & \min  & c^T x &           \\
+            &       & \st   & Ax    & {}\ge b   \\
+            &       &       &  x    & {}\ge \Vec{0}.
+        \end{array}
+        \end{equation*}
+    \end{multicols}
+\end{defn}
+
+In optimization, a given problem has a dual that is related to its primal form. In linear programming, the duality gap is 0 if and only if the optimal solution is feasible for both problems, which is helpful if one is easier to solve than the other.
+
+\begin{defn}[Dual program]
+    \label{defn:dual-program}
+    Given $A \in \R^{m \times n}$, $b \in \R^m$, and $c \in \R^n$, a \textit{dual program} can be written in either standard form or canonical (also called symmetric) form as follows:
+    \begin{multicols}{2}
+        \noindent
+        \begin{equation*}
+        \begin{array}{lllr@{}c@{}r@{}l}
+        \text{standard form} 
+            & (DP)  & \max  & b^T y &           \\
+            &       & \st   & A^T y & {}\le c   \\
+        \end{array}
+        \end{equation*}
+        
+        \noindent
+        \begin{equation*}
+        \begin{array}{lllr@{}c@{}r@{}l}
+        \text{canonical form} 
+            & (DP)  & \max  & b^T y &           \\
+            &       & \st   & A^T y & {}\le c   \\
+            &       &       &  y    & {}\ge \Vec{0}.
+        \end{array}
+        \end{equation*}
+        \end{multicols}
+\end{defn}
+
+The notation used above will also be used throughout unless otherwise specified. Additionally, $ofv_P$ will denote the objective function value for a particular problem $(P)$ and $oofv_P$ will denote the optimal objective function value for a particular problem $(P)$. The subscript will be dropped when the problem of interest is clear.
+
+We recall some immediate results that relate a linear program $(LP)$ to its dual program $(DP)$.
+
+\begin{thm}[Weak duality for LPs]
+    \label{thm:weak-duality-LP}
+    If $x$ is feasible in $(LP)$ and $y$ is feasible in $(DP)$, then $ofv_{DP}(y) \le ofv_{LP}(x)$.
+\end{thm}
+
+\begin{thm}[Supervisor principle for LPs]
+    \label{thm:supervisor-principle-LP}
+    If $x$ is feasible in $(LP)$, $y$ is feasible in $(DP)$, and $ofv_{DP}(y) = ofv_{LP}(x)$, then $x$ is optimal in $(LP)$ and $y$ is optimal in $(DP)$.
+\end{thm}
+
+\begin{thm}[Strong duality for LPs]
+    \label{thm:strong-duality-LP}
+    If $(LP)$ is feasible and $(DP)$ is feasible, then there exists $x$ that is feasible in $(LP)$ and $y$ that is feasible in $(DP)$ such that $ofv_{DP}(y) = ofv_{LP}(x)$. Hence, $x$ is optimal in $(LP)$ and $y$ is optimal in $(DP)$.
+\end{thm}
+
+
+\subsection{Introduction of (Binary) Integer Linear Programs}
+\label{subsec:introduction-of-ilps}
+
+\begin{defn}[Integer linear/dual program]
+    \label{def:integer-linear/dual-program}
+    Given $A \in \R^{m \times n}$, $b \in \R^m$, and $c \in \R^n$, a (binary) integer linear program $(ILP)$ and its corresponding integer dual program $(IDP)$ in canonical form is written as
+    \begin{multicols}{2}
+        \noindent
+        \begin{equation*}
+        \begin{array}{llr@{}l@{}l@{}}
+            (ILP)   & \min  & c^T x &                   \\
+                    & \st   & Ax    & {}\ge b           \\
+                    &       &  x    & {}\in \{0, 1\}^n
+        \end{array}
+        \end{equation*}
+        
+        \noindent
+        \begin{equation*}
+        \begin{array}{llr@{}l@{}l@{}}
+            (IDP)   & \min  & b^T y &                   \\
+                    & \st   & A^T y & {}\le c           \\
+                    &       &  y    & {}\in \{0, 1\}^n.
+        \end{array}
+        \end{equation*}
+    \end{multicols}
+\end{defn}
+
+In general, solving integer linear/dual programs is NP-hard.
+
+\begin{rmk}
+    \label{rmk:ilp-lp-inequalities}
+    Since the feasible region for the $(ILP)$ is a subset of the feasible region for the $(LP)$ (with all other components same), then $oofv_{LP} \le oofv_{ILP}$. Similarly since the feasible region for the $(IDP)$ is a subset of the feasible region for the $(DP)$, then $oofv_{IDP} \le oofv_{DP}$. This gives the following relations, assuming existence of respective solutions,
+    \[
+        oofv_{IDP} \le oofv_{DP} = oofv_{LP} \le oofv_{ILP}.
+    \]
+\end{rmk}
+
+The duality gap between a given $(ILP)$ and $(IDP)$ does not have strong guarantees like for linear programs. However, we do have the following results relating $(ILP)$ and $(IDP)$.
+
+\begin{thm}[Weak duality for ILPs]
+    \label{thm:weak-duality-ILP}
+    If $x$ is feasible in $(ILP)$ and $y$ is feasible in $(IDP)$, then $ofv_{IDP}(y) \le ofv_{ILP}(x)$.
+\end{thm}
