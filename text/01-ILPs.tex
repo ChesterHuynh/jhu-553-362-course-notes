@@ -39,7 +39,7 @@ In optimization, a given problem has a dual that is related to its primal form. 
     \begin{multicols}{2}
         \noindent
         \begin{equation*}
-        \begin{array}{lllr@{}c@{}r@{}l}
+        \begin{array}{lllr@{}c@{}}
         \text{standard form} 
             & (DP)  & \max  & b^T y &           \\
             &       & \st   & A^T y & {}\le c   \\
@@ -48,7 +48,7 @@ In optimization, a given problem has a dual that is related to its primal form. 
         
         \noindent
         \begin{equation*}
-        \begin{array}{lllr@{}c@{}r@{}l}
+        \begin{array}{lllr@{}c@{}}
         \text{canonical form} 
             & (DP)  & \max  & b^T y &           \\
             &       & \st   & A^T y & {}\le c   \\
@@ -81,13 +81,15 @@ We recall some immediate results that relate a linear program $(LP)$ to its dual
 \subsection{Introduction of (Binary) Integer Linear Programs}
 \label{subsec:introduction-of-ilps}
 
+In general, solving integer linear/dual programs is NP-hard.
+
 \begin{defn}[Integer linear/dual program]
     \label{def:integer-linear/dual-program}
-    Given $A \in \R^{m \times n}$, $b \in \R^m$, and $c \in \R^n$, a (binary) integer linear program $(ILP)$ and its corresponding integer dual program $(IDP)$ in canonical form is written as
+    Given $A \in \R^{m \times n}$, $b \in \R^m$, and $c \in \R^n$, a (binary) integer linear program $(ILP)$ and its integer dual program $(IDP)$ in canonical form is written as
     \begin{multicols}{2}
         \noindent
         \begin{equation*}
-        \begin{array}{llr@{}l@{}l@{}}
+        \begin{array}{llr@{}l@{}}
             (ILP)   & \min  & c^T x &                   \\
                     & \st   & Ax    & {}\ge b           \\
                     &       &  x    & {}\in \{0, 1\}^n
@@ -96,7 +98,7 @@ We recall some immediate results that relate a linear program $(LP)$ to its dual
         
         \noindent
         \begin{equation*}
-        \begin{array}{llr@{}l@{}l@{}}
+        \begin{array}{llr@{}l@{}}
             (IDP)   & \min  & b^T y &                   \\
                     & \st   & A^T y & {}\le c           \\
                     &       &  y    & {}\in \{0, 1\}^n.
@@ -105,11 +107,9 @@ We recall some immediate results that relate a linear program $(LP)$ to its dual
     \end{multicols}
 \end{defn}
 
-In general, solving integer linear/dual programs is NP-hard.
-
 \begin{rmk}
     \label{rmk:ilp-lp-inequalities}
-    Since the feasible region for the $(ILP)$ is a subset of the feasible region for the $(LP)$ (with all other components same), then $oofv_{LP} \le oofv_{ILP}$. Similarly since the feasible region for the $(IDP)$ is a subset of the feasible region for the $(DP)$, then $oofv_{IDP} \le oofv_{DP}$. This gives the following relations, assuming existence of respective solutions,
+    Since the feasible region for the $(ILP)$ is a subset of the feasible region for the $(LP)$ (with all else same), then $oofv_{LP} \le oofv_{ILP}$. By a similar argument, $oofv_{IDP} \le oofv_{DP}$. This gives the following relations, assuming existence of respective solutions,
     \[
         oofv_{IDP} \le oofv_{DP} = oofv_{LP} \le oofv_{ILP}.
     \]
@@ -120,4 +120,153 @@ The duality gap between a given $(ILP)$ and $(IDP)$ does not have strong guarant
 \begin{thm}[Weak duality for ILPs]
     \label{thm:weak-duality-ILP}
     If $x$ is feasible in $(ILP)$ and $y$ is feasible in $(IDP)$, then $ofv_{IDP}(y) \le ofv_{ILP}(x)$.
+    
+    \begin{proof}
+        Since $x$ is feasible in the relaxation $(LP)$ of $(ILP)$ and $y$ is feasible in the relaxation $(DP)$ of $(IDP)$, by weak duality for LPs, $ofv_{IDP}(y) \le ofv_{DP}(y) \le ofv_{LP}(x) \le ofv_{ILP}(x)$.
+    \end{proof}
+\end{thm}
+
+\begin{thm}[Supervisor principle for ILPs]
+    \label{thm:supervisor-principle-ILP}
+    If $x$ is feasible in $(ILP)$, $y$ is feasible in $(IDP)$, and $ofv_{IDP}(y) = ofv_{ILP}(x)$, then $x$ is optimal in $(ILP)$ and $y$ is optimal in $(IDP)$.
+    
+    \begin{proof}
+        By weak duality for ILPs, $ofv_{ILP}$ is lower bounded by $ofv_{IDP}(y)$ for all $y$ feasible in $(IDP)$, so $x$ is optimal in $(ILP)$. By a similar argument, $y$ is optimal in $(IDP)$. Further, by a squeeze argument, $oofv_{IDP}(y) = oofv_{DP}(y) = oofv{LP}(x) = oofv_{ILP}(x)$.
+    \end{proof}
+\end{thm}
+
+In general, we do not have an analogous strong duality relation between a given $(ILP)$ and $(IDP)$, so there could be a duality gap.
+
+\begin{exm}
+    Let $A = [2]$, $b = [1]$, and $c = [1]$. Then,
+    \begin{multicols}{2}
+        \noindent
+        \begin{equation*}
+        \begin{array}{llr@{}l@{}}
+            (ILP)   & \min  &  x    &               \\
+                    & \st   & 2x    & {}\ge 1       \\
+                    &       &  x    & {}\in \{0, 1\}
+        \end{array}
+        \end{equation*}
+        
+        \noindent
+        \begin{equation*}
+        \begin{array}{llr@{}l@{}}
+            (IDP)   & \max  &  y    &                   \\
+                    & \st   & 2y    & {}\le 1           \\
+                    &       &  y    & {}\in \{0, 1\}.
+        \end{array}
+        \end{equation*}
+    \end{multicols}
+    $oofv_{ILP} = 1$ since $x = 1$ is the only feasible solution for $(ILP)$. $oofv_{IDP} = 0$ since $y = 0$ is the only feasible solution for $(IDP)$. This gives a duality gap of 1. 
+    
+    However, the linear relaxations have optimal solutions $x = y = \frac12$ and $oofv_{LP} = oofv_{DP} = \frac12$, upholding strong duality for LPs.
+\end{exm}
+
+Since solving ILPs is NP-Hard in general, we can instead solve the LP relaxation in poly-time. If we obtain an optimal solution $x^*$ for the $LP$, we know the following about the ILP:
+\begin{itemize}
+    \item $oofv_{LP} \le oofv_{ILP}$
+    \item if $x^*$ happens to be binary-valued, then $x^*$ is also optimal in ILP.
+\end{itemize}
+
+\begin{defn}[Dual problems]
+    \label{def:dual-problems}
+    Consider the problems
+    \begin{multicols}{2}
+        \noindent
+        \begin{equation*}
+        \begin{array}{lll@{}}
+            (P)     & \min  &  f(x)     \\
+                    & \st   &   x \in S \\
+        \end{array}
+        \end{equation*}
+        
+        \noindent
+        \begin{equation*}
+        \begin{array}{lll@{}}
+            (Q)     & \min  &  g(y)     \\
+                    & \st   &   y \in T. \\
+        \end{array}
+        \end{equation*}
+    \end{multicols}
+    If for all $x \in S$ and $y \in T$, $g(y) \le f(x)$, then we say $(P)$ and $(Q)$ are \textit{dual problems}.
+\end{defn}
+
+
+\subsection{Graph Theory}
+\label{subsec:graph-theory}
+
+\begin{defn}[Simple graph]
+    \label{def:simple-graph}
+    A \textit{simple graph} $G = (V, E)$ consists of 
+    \begin{itemize}
+        \item a set $V$ of vertices
+        \item a set $E$ of 2-element subsets of $V$.
+    \end{itemize}
+    This definition does not allow for
+    \begin{itemize}
+        \item self-loops
+        \item parallel edges
+        \item directed edges
+    \end{itemize}
+\end{defn}
+
+\begin{defn}[Matching]
+    \label{def:matching}
+    $F \sse E$ is a \textit{matching} if no 2 members of $F$ share endpoints. Note, $\emptyset$ is vacuously a matching. The \textit{matching number} $\alpha'(G)$ for a graph $G$ is
+    \[
+        \alpha'(G) \defeq \max_{F \sse E \text{ matching}} |F|.
+    \]
+    A \textit{perfect matching} is a matching that uses all vertices.
+\end{defn}
+
+\begin{defn}[Independent set]
+    \label{def:independent-set}
+    $S \sse V$ is an \textit{independent set} if no 2 members of $S$ are adjacent. Note, $\emptyset$ is vacuously an independent set. The \textit{independence number} $\alpha(G)$ for a graph $G$ is
+    \[
+        \alpha(G) \defeq \max_{S \sse V \text{ ind set}} |S|.
+    \]
+\end{defn}
+
+\begin{defn}[Clique]
+    \label{def:clique}
+    $S \sse V$ is a \textit{clique} if every pair of vertices in $S$ are adjacent. Note, $\emptyset$ is vacuously a clique. The \textit{clique number} $\omega(G)$ for a graph $G$ is
+    \[
+        \omega(G) \defeq \max_{S \sse V \text{ clique}} |S|.
+    \]
+\end{defn}
+
+\begin{defn}[Vertex cover]
+    \label{def:vertex-cover}
+    $S \sse V$ is a \textit{vertex cover} if every edge of $E$ has an endpoint in $S$. The $\textit{vertex cover number}$ $\beta(G)$ for a graph $G$ is
+    \[
+        \beta(G) \defeq \min_{S \sse V \text{ vertex cover}} |S|.
+    \]
+\end{defn}
+
+\begin{defn}[Edge cover]
+    \label{def:edge-cover}
+    $F \sse E$ is a \textit{edge cover} if every vertex of $V$ is an endpoint of an edge in $F$. The $\textit{edge cover number}$ $\beta'(G)$ for a graph $G$ is
+    \[
+        \beta'(G) \defeq \min_{F \sse E \text{ edge cover}} |F|.
+    \]
+\end{defn}
+
+\begin{thm}[Weak duality for matchings and vertex covers]
+    \label{thm:weak-duality-matchings-vertex-covers}
+    For all graphs $G$, $\alpha'(G) \le \beta(G)$.
+    
+    \begin{proof}
+        Let $F \sse E$ be a maximum matching and $S \sse V$ be a minimum vertex cover. For every edge of $F$, there exists an endpoint in $S$ by definition of a vertex cover. Let $M$ be the set of these vertices, which are all distinct by definition of a matching. Thus, $\alpha'(G) \equiv |F| = |M| \le |S| \equiv \beta(G)$.
+    \end{proof}
+\end{thm}
+
+\begin{defn}[Bipartite graph]
+    \label{def:bipartite-graph}
+    A graph $G = (V, E)$ is \textit{bipartite} if $V$ can be partitioned into 2 independent sets $X$, $Y$, that is, every edge has an endpoint in $X$ and an endpoint in $Y$.
+\end{defn}
+
+\begin{thm}[K\"onig-Egervary]
+    \label{thm:konig-egervary}
+    If $G$ is bipartite, then $\alpha'(G) = \beta(G)$.
 \end{thm}
