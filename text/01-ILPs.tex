@@ -206,8 +206,23 @@ Since solving ILPs is NP-Hard in general, we can instead solve the LP relaxation
     This definition does not allow for
     \begin{itemize}
         \item self-loops
+            \begin{tikzpicture}[node distance={15mm}, thick, main/.style = {draw, circle}, minimum size=1em]
+                \node[main] (1) {};
+                \draw (1) to [out=0,in=90,looseness=4] (1);
+            \end{tikzpicture}
         \item parallel edges
+            \begin{tikzpicture}[node distance={10mm}, thick, main/.style = {draw, circle}, minimum size=1em]
+                \node[main] (1) {};
+                \node[main] (2) [right of=1] {};
+                \draw (1) to [out=45,in=135,looseness=1] (2);
+                \draw (1) to [out=315,in=225,looseness=1] (2);
+            \end{tikzpicture}
         \item directed edges
+            \begin{tikzpicture}[node distance={10mm}, thick, main/.style = {draw, circle}, minimum size=1em]
+                \node[main] (1) {};
+                \node[main] (2) [right of=1] {};
+                \draw [->] (1) -- (2);
+            \end{tikzpicture}
     \end{itemize}
 \end{defn}
 
@@ -235,6 +250,49 @@ Since solving ILPs is NP-Hard in general, we can instead solve the LP relaxation
         \omega(G) \defeq \max_{S \sse V \text{ clique}} |S|.
     \]
 \end{defn}
+
+\begin{exm}
+    Consider the following example graph $\hat{G} = (V,E)$.
+    \begin{center}
+        \begin{tikzpicture}[node distance={15mm}, thick, main/.style = {draw, circle}] 
+            \node[main] (1) {$1$}; 
+            \node[main] (2) [above right of=1] {$2$}; 
+            \node[main] (3) [below right of=1] {$3$}; 
+            \node[main] (4) [above right of=3] {$4$}; 
+            \node[main] (5) [above right of=2] {$5$}; 
+            \node[main] (6) [below right of=5] {$6$};
+            \node[main] (7) [below right of=4] {$7$};
+            \node[main] (8) [above right of=7] {$8$};
+            \node[main] (9) [right of=8] {$9$};
+            \node[main] (10) [above right of=9] {$10$};
+            \node[main] (11) [right of=9] {$11$};
+            \node[main] (12) [below right of=9] {$12$};
+            \draw (1) -- (2);
+            \draw (1) -- (3);
+            \draw (2) -- (4);
+            \draw (2) -- (5);
+            \draw (2) -- (6);
+            \draw (3) -- (4);
+            \draw (4) -- (5);
+            \draw (4) -- (6);
+            \draw (4) -- (7);
+            \draw (5) -- (6);
+            \draw (6) -- (8);
+            \draw (7) -- (8);
+            \draw (8) -- (9);
+            \draw (9) -- (10);
+            \draw (9) -- (11);
+            \draw (9) -- (12);
+        \end{tikzpicture}
+    \end{center}
+    A matching is $\{(1,3), (4,5), (2,6), (7,8), (9,10)\}$. An independent set is $\{1, 4, 8, 10, 11, 12\}$. A clique is $\{2,4,6,8\}$. Indeed these are all optimal and
+    \begin{align*}
+        \alpha'(\hat{G})    &= 5 \\
+        \alpha(\hat{G})     &= 6 \\
+        \omega(\hat{G})     &= 4.
+    \end{align*}
+    The independence number can be determined since you can partition $V$ into 6 cliques such that each clique is maximal.
+\end{exm}
 
 \begin{defn}[Vertex cover]
     \label{def:vertex-cover}
@@ -270,3 +328,109 @@ Since solving ILPs is NP-Hard in general, we can instead solve the LP relaxation
     \label{thm:konig-egervary}
     If $G$ is bipartite, then $\alpha'(G) = \beta(G)$.
 \end{thm}
+
+
+\subsection{IPs with the Incidence Matrix}
+\begin{defn}[Incidence matrix]
+    \label{def:incidence-matrix}
+    Let $G = (V,E)$ be a simple graph, and say $V = \{v_1, v_2, \dots, v_n\}$ and $E = \{e_1, e_2, \dots, e_m\}$. The \textit{incidence matrix} $A_G$ of $G$ is the $m \times n$ binary matrix such that
+    \[
+        (A_G)_{ij} = \begin{cases}
+                        1 & e_i \text{ has endpoint } v_j \\ 
+                        0 & \text{else}
+                     \end{cases}
+        \quad \quad
+        \forall i \in [m], j \in [n].
+    \]
+    We drop the subscript $G$ and use $A \equiv A_G$ when the context is clear.
+\end{defn}
+
+\begin{defn}[Indicator vector]
+    To any set $S \sse V$, associate the \textit{indicator vector} $x_s \in \{0,1\}^n$ such that
+    \[
+        (x_S)_i \defeq \begin{cases}
+                    1 & \text{if } v_i \in S \\
+                    0 & \text{else}
+                  \end{cases}
+        \quad \quad
+        \forall i \in [n].
+    \]
+    Similarly, to any set $F \sse E$, associate the indicator vector $y_F \in \{0,1\}^n$ such that
+    \[
+        (y_F)_i \defeq \begin{cases}
+                    1 & \text{if } e_i \in F \\
+                    0 & \text{else}
+                  \end{cases}
+        \quad \quad
+        \forall i \in [m].
+    \]
+\end{defn}
+
+\begin{rmk}
+    \label{rmk:incidence-matrix-inequality-iffs}
+    Note the following equivalencies about vector inequalities with the incidence matrix:
+    \begin{itemize}
+        \item $\forall S \sse V$, $S$ is a vertex cover if and only if $A x_S \ge \one_m$
+        \item $\forall F \sse E$, $F$ is a matching if and only if $A^T y_F \le \one_n$
+        \item $\forall F \sse E$, $F$ is an edge cover if and only if $A^T y_F \ge \one_n$
+        \item $\forall S \sse V$, $S$ is an independent set if and only if $Ax_S \le \one_m$
+    \end{itemize}
+\end{rmk}
+
+From Remark \ref{rmk:incidence-matrix-inequality-iffs}, we can formulate two sets of dual IPs.
+
+We begin with the min vertex cover and max matching problems. A dual relationship naturally arises -- given a matching $F$ for a graph $G$, which is a set of edges that do not share any endpoints, in order to form a vertex cover $S$ for $G$, we must include in $S$ at least one of the end of endpoints for each edge in $F$. Indeed, $S$ may require even more vertices to be a proper vertex cover, but we are guaranteed that $|S| \ge |F|$.
+
+\begin{defn}[Min vertex cover problem]
+    \label{def:min-vertex-cover-formulation}
+    Given a graph $G=(V,E)$, we can formulate the \textit{min vertex cover problem} as:
+        \begin{equation*}
+        \begin{array}{llr@{}l@{}}
+            (ILP)   & \min  &   \one_n^T x  &               \\
+                    & \st   &       Ax      &{}\ge \one_m   \\
+                    &       &       x       &{}\in \{0,1\}^n,
+        \end{array}
+        \end{equation*}
+    where $A \equiv A_G$ and $x \equiv x_S$ for $S \sse V$. Indeed, any feasible solution is a vertex cover.
+\end{defn}
+
+\begin{defn}[Max matching problem]
+    \label{def:max-matching-formulation}
+    Given a graph $G=(V,E)$, we can formulate the \textit{max matching problem} as:
+        \begin{equation*}
+        \begin{array}{llr@{}l@{}}
+            (IDP)   & \max  &   \one_m^T y  &               \\
+                    & \st   &       A^T y   &{}\le \one_n   \\
+                    &       &       y       &{}\in \{0,1\}^m,
+        \end{array}
+        \end{equation*}
+    where $y \equiv y_F$ for $F \sse E$. Indeed, any feasible solution is a matching. Further, this problem is a dual of the min vertex cover problem.
+\end{defn}
+
+A second set of dual problems is the min edge cover and max independent set problems. Given an independent set $S$ for graph $G$, which is a set of vertices in which none of its vertices are adjacent, we need at least $|S|$ edges to cover $V$ since we will need at least $|S|$ edges to cover the vertices included in $S$.
+
+\begin{defn}[Min edge cover problem]
+    \label{def:min-edge-cover-formulation}
+    Given a graph $G=(V,E)$, we can formulate the \textit{min edge cover problem} as:
+        \begin{equation*}
+        \begin{array}{llr@{}l@{}}
+            (ILP)   & \min  &   \one_n^T y  &               \\
+                    & \st   &       A^T y   &{}\ge \one_m   \\
+                    &       &       y       &{}\in \{0,1\}^m,
+        \end{array}
+        \end{equation*}
+    where $y \equiv y_F$ for $F \sse E$. Indeed, any feasible solution is a min edge cover.
+\end{defn}
+
+\begin{defn}[Max independent set problem]
+    \label{def:max-ind-set-formulation}
+    Given a graph $G=(V,E)$, we can formulate the \textit{max matching problem} as:
+        \begin{equation*}
+        \begin{array}{llr@{}l@{}}
+            (IDP)   & \max  &   \one_n^T x  &               \\
+                    & \st   &       Ax      &{}\le \one_m   \\
+                    &       &       x       &{}\in \{0,1\}^n,
+        \end{array}
+        \end{equation*}
+    where $x \equiv x_S$ for $S \sse V$. Indeed, any feasible solution is an independent set. Further, this problem is a dual of the min edge cover problem.
+\end{defn}  
