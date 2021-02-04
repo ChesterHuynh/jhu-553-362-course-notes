@@ -285,13 +285,16 @@ Since solving ILPs is NP-Hard in general, we can instead solve the LP relaxation
             \draw (9) -- (12);
         \end{tikzpicture}
     \end{center}
-    A matching is $\{(1,3), (4,5), (2,6), (7,8), (9,10)\}$. An independent set is $\{1, 4, 8, 10, 11, 12\}$. A clique is $\{2,4,6,8\}$. Indeed these are all optimal and
+    A matching is $\{(1,3), (4,5), (2,6), (7,8), (9,10)\}$. 
+    An independent set is $\{1, 4, 8, 10, 11, 12\}$. 
+    A clique is $\{2,4,6,8\}$. 
+    Indeed these are all optimal and
     \begin{align*}
         \alpha'(\hat{G})    &= 5 \\
         \alpha(\hat{G})     &= 6 \\
         \omega(\hat{G})     &= 4.
     \end{align*}
-    The independence number can be determined since you can partition $V$ into 6 cliques such that each clique is maximal.
+    The independence number can be determined since one could partition $V$ into 6 cliques such that each clique is maximal.
 \end{exm}
 
 \begin{defn}[Vertex cover]
@@ -407,6 +410,11 @@ We begin with the min vertex cover and max matching problems. A dual relationshi
     where $y \equiv y_F$ for $F \sse E$. Indeed, any feasible solution is a matching. Further, this problem is a dual of the min vertex cover problem.
 \end{defn}
 
+\begin{thm}[Weak duality]
+    \label{thm:weak-duality-min-vtx-cover-max-matching}
+    For all graph $G = (V,E)$, any matching $F$ and vertex cover $S$ satisfy $|F| \le |S|$.
+\end{thm}
+
 A second set of dual problems is the min edge cover and max independent set problems. Given an independent set $S$ for graph $G$, which is a set of vertices in which none of its vertices are adjacent, we need at least $|S|$ edges to cover $V$ since we will need at least $|S|$ edges to cover the vertices included in $S$.
 
 \begin{defn}[Min edge cover problem]
@@ -433,4 +441,221 @@ A second set of dual problems is the min edge cover and max independent set prob
         \end{array}
         \end{equation*}
     where $x \equiv x_S$ for $S \sse V$. Indeed, any feasible solution is an independent set. Further, this problem is a dual of the min edge cover problem.
-\end{defn}  
+\end{defn}
+
+\begin{thm}[Weak duality]
+    \label{thm:weak-duality-min-edge-cover-max-ind-set}
+    For all graph $G = (V,E)$, any edge cover $F$ and independent set $S$ satisfy $|S| \le |F|$.
+\end{thm}
+
+
+\subsection{IPs with Graph Colorings}
+\begin{defn}[Vertex Coloring]
+    \label{def:vertex-coloring}
+    For a graph $G = (V,E)$, a \textit{(proper) vertex coloring} of $G$ is an assignment $\theta: V \rightarrow \{1, 2, 3, \dots\}$ of a color to each vertex such that every pair of adjacent vertices, the two vertices have different colors. The \textit{chromatic number} $\chi(G)$ for a graph $G$ is defined as the fewest number of colors needed to properly color $G$.
+\end{defn}
+
+\begin{exm} 
+    Consider the following graph $\hat{G}$.
+    \begin{center}
+        \begin{tikzpicture}[node distance={15mm}, thick, main/.style = {draw, circle}] 
+            \node[main] (1) {}; 
+            \node[main] (2) [above right of=1] {}; 
+            \node[main] (3) [below right of=1] {}; 
+            \node[main] (4) [above right of=3] {}; 
+            \node[main] (5) [above right of=4] {};
+            \node[main] (6) [below right of=4] {};
+            \node[main] (7) [above right of=6] {};
+            \node[main] (8) [right of=7] {};
+            \node[main] (9) [above right of=8] {};
+            \node[main] (10) [right of=8] {};
+            \node[main] (11) [below right of=8] {};
+            \draw (1) -- (2);
+            \draw (1) -- (3);
+            \draw (2) -- (4);
+            \draw (2) -- (5);
+            \draw (3) -- (4);
+            \draw (4) -- (6);
+            \draw (4) -- (5);
+            \draw (5) -- (7);
+            \draw (6) -- (7);
+            \draw (7) -- (8);
+            \draw (8) -- (9);
+            \draw (8) -- (10);
+            \draw (8) -- (11);
+        \end{tikzpicture}
+    \end{center}
+    
+    Observe that because there is a 3-clique, which requires $\chi(G) \ge 3$. The following is a vertex coloring showing that $\chi(G) = 3$.
+    \begin{center}
+        \begin{tikzpicture}[node distance={15mm}, thick, main/.style = {draw, circle}] 
+            \node[main, fill=green] (1) {}; 
+            \node[main, fill=blue] (2) [above right of=1] {}; 
+            \node[main, fill=red] (3) [below right of=1] {}; 
+            \node[main, fill=green] (4) [above right of=3] {}; 
+            \node[main, fill=red] (5) [above right of=4] {};
+            \node[main, fill=blue] (6) [below right of=4] {};
+            \node[main, fill=green] (7) [above right of=6] {};
+            \node[main, fill=blue] (8) [right of=7] {};
+            \node[main, fill=red] (9) [above right of=8] {};
+            \node[main, fill=red] (10) [right of=8] {};
+            \node[main, fill=red] (11) [below right of=8] {};
+            \draw (1) -- (2);
+            \draw (1) -- (3);
+            \draw (2) -- (4);
+            \draw (2) -- (5);
+            \draw (3) -- (4);
+            \draw (4) -- (6);
+            \draw (4) -- (5);
+            \draw (5) -- (7);
+            \draw (6) -- (7);
+            \draw (7) -- (8);
+            \draw (8) -- (9);
+            \draw (8) -- (10);
+            \draw (8) -- (11);
+        \end{tikzpicture}
+    \end{center}
+\end{exm}
+
+\begin{thm}[Weak duality]
+    \label{thm:weak-duality-max-clique-min-coloring}
+    For all graphs $G$, $\omega(G) \le \chi(G)$.
+\end{thm}
+
+Note that each color class (vertices with the same color) form an independent set. This gives the following observation.
+\begin{obs}
+    A vertex coloring is a partition of the vertices into independent sets. Thus, $\chi(G)$ can be thought of as the fewest number of independent sets in a partition of vertices of $G$ into independent sets.
+\end{obs}
+
+\begin{defn}
+    For a graph $G = (V,E)$, where say $V=\{v_1, v_2, \dots, v_n\}$, let all possible independent sets be enumerated as $I_1, I_2, \dots, I_l$. Define the binary matrix $M \in \{0,1\}^{n\times l}$ such that
+    \[
+        M_{ij} \defeq \begin{cases}
+                        1 & \text{if } v_i \in I_j \\
+                        0 & \text{else}
+                      \end{cases}
+    \]
+\end{defn}
+
+\begin{exm}
+    Consider the following graph
+    \begin{center}
+        \begin{tikzpicture}[node distance={15mm}, thick, main/.style = {draw, circle}] 
+            \node[main] (1) {$v_1$};
+            \node[main] (2) [right of=1] {$v_2$};
+            \node[main] (3) [below right=0.625cm and 0.1cm of 5] {$v_3$};
+            \node[main] (4) [right of=3] {$v_4$};
+            \node[main] (5) [above right of=2] {$v_5$};
+            \draw (1) -- (2);
+            \draw (1) -- (5);
+            \draw (2) -- (3);
+            \draw (2) -- (5);
+            \draw (3) -- (4);
+            \draw (3) -- (5);
+            \draw (4) -- (5);
+        \end{tikzpicture}
+    \end{center}
+    The matrix $M$ for this graph is
+    \[
+        M = \left[
+            \begin{array}{c:ccccc:ccc}
+                0 & 1 & 0 & 0 & 0 & 0 & 1 & 1 & 0 \\ 
+                0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 1 \\ 
+                0 & 0 & 0 & 1 & 0 & 0 & 1 & 0 & 0 \\
+                0 & 0 & 0 & 0 & 1 & 0 & 0 & 1 & 1 \\
+                0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0
+            \end{array}
+            \right].
+    \]
+    The dashed lines indicate different ``types" of independent sets of the graph.
+    The first column is the empty independent set,
+    the next five are trivial singleton independent sets, and
+    the last three are non-trivial independent sets.
+\end{exm}
+
+\begin{defn}[Independent set covering]
+    \label{def:ind-set-covering}
+    An \textit{independent set covering} (aka a vertex coloring) is a collection $\Cal{I} \sse\{I_1, I_2, \dots, I_n\}$ of independent sets such that $\bigcup_{I_i \in \Cal{I}} I_i = V$. Further, for all $\Cal{I} \sse \{I_1, I_2, \dots, I_n\}$, define the indicator vector $x_{\Cal{I}} \in \{0,1\}^l$ such that
+    \[
+        (x_{\Cal{I}})_i \defeq \begin{cases}
+                                1 & \text{if } I_i \in \Cal{I} \\
+                                0 & \text{else}.
+                               \end{cases}
+    \]
+\end{defn}
+
+\begin{exm}
+    Consider the same graph as the previous example.
+    \begin{center}
+        \begin{tikzpicture}[node distance={15mm}, thick, main/.style = {draw, circle}] 
+            \node[main] (1) {$v_1$};
+            \node[main] (2) [right of=1] {$v_2$};
+            \node[main] (3) [below right=0.51cm and 0.1cm of 5] {$v_3$};
+            \node[main] (4) [right of=3] {$v_4$};
+            \node[main] (5) [above right=0.625cm and 0.1cm of 2] {$v_5$};
+            \draw (1) -- (2);
+            \draw (1) -- (5);
+            \draw (2) -- (3);
+            \draw (2) -- (5);
+            \draw (3) -- (4);
+            \draw (3) -- (5);
+            \draw (4) -- (5);
+        \end{tikzpicture}
+    \end{center}
+    
+    Consider the following two indicator vectors
+    \begin{multicols}{2}
+        \noindent\[
+            x_{\Cal{I}_1} = \begin{bmatrix} 
+                                0 \\ 0 \\ 0 \\ 1 \\ 0 \\ 0 \\ 0 \\ 0 \\ 1
+                            \end{bmatrix}
+        \]
+        \noindent\[ 
+            x_{\Cal{I}_2} = \begin{bmatrix} 
+                                0 \\ 0 \\ 0 \\ 0 \\ 0 \\ 1 \\ 1 \\ 0 \\ 1
+                            \end{bmatrix}
+        \]
+    \end{multicols}
+    Since $Mx_{\Cal{I}_1} \not\ge \one$, then there is at least one vertex not being covered by an independent set of $\Cal{I}_1$. In contrast, $Mx_{\Cal{I}_2} \ge \one$, so $\Cal{I}_2$ is an independent set covering, i.e. a proper vertex coloring.
+\end{exm}
+
+We formulate the min chromatic number and max clique problems, which are dual problems as suggested by Theorem \ref{thm:weak-duality-max-clique-min-coloring}.
+
+\begin{defn}[Min chromatic number problem]
+    \label{def:min-chromatic-number-formulation}
+    Given a graph $G = (V,E)$, we can formulate the \textit{min chromatic number problem} as:
+        \begin{equation*}
+            \begin{array}{llr@{}l@{}}
+                (ILP)   & \min  &   \one_l^T x  &               \\
+                        & \st   &       Mx      &{}\ge \one_n   \\
+                        &       &       x       &{}\in \{0,1\}^l
+            \end{array}
+        \end{equation*}
+\end{defn}
+
+\begin{defn}[Max clique problem]
+    \label{def:max-clique-formulation}
+    Given a graph $G = (V,E)$, we can formulate the \textit{max clique problem} as:
+        \begin{equation*}
+            \begin{array}{llr@{}l@{}}
+                (IDP)   & \max  &   \one_n^T y  &               \\
+                        & \st   &       M^T y   &{}\le \one_l   \\
+                        &       &       y       &{}\in \{0,1\}^n,
+            \end{array}
+        \end{equation*}
+    where $y$ is the indicator vector for a set $S$ of vertices. Note that $(M^T y)_i = |S \cap I_i|$. So if $|S \cap I_i| \le 1$ for all $i \in [l]$, then $S$ is a clique, otherwise if more than 1 vertex of $S$ was in an independent set, then those vertices are not adjacent, and $S$ therefore cannot be a clique. Conversely, if $S$ is not a clique, then it will an intersection with an independent set with size at least 2.
+\end{defn}
+
+\begin{exm}
+    Observe the following graph that demonstrates a duality gap:
+    \begin{center}
+        \begin{tikzpicture}[node distance={15mm}, thick, main/.style = {draw, circle}]
+            \node[draw, regular polygon,regular polygon sides=5,minimum size=3cm] (p) {};
+                \foreach\x in {1,...,5}{
+                    \node[main=\x, fill=white] (p\x) at (p.corner \x){};
+                }
+        \end{tikzpicture}
+    \end{center}
+    
+    This graph has $\omega(G) = 2$, but $\chi(G) = 3$.
+\end{exm}

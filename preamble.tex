@@ -13,6 +13,10 @@
 \usepackage{titlesec}
 \usepackage{tikz}
 \usepackage{xspace}
+\usepackage{arydshln}
+
+\usetikzlibrary{positioning}
+\usetikzlibrary{shapes.geometric}
 
 \hypersetup{
     colorlinks=true,
@@ -46,9 +50,11 @@
 \newcommand{\ceil}[1]{\ensuremath{\left\lceil#1\right\rceil}}
 \newcommand{\floor}[1]{\ensuremath{\left\lfloor#1\right\rfloor}}
 \newcommand{\ip}[2]{\left\langle #1, #2\right\rangle}
-\newcommand{\one}{\Vec{1}}
 \DeclareMathOperator*{\argmax}{arg\,max\ }
 \DeclareMathOperator*{\argmin}{arg\,min\ }
+
+\newcommand{\Cal}[1]{\ensuremath{\mathcal{#1}}}
+\newcommand{\one}{\Vec{1}}
 \DeclareMathOperator*{\st}{s.t.}
 \DeclareMathOperator*{\defeq}{\coloneqq}
 
