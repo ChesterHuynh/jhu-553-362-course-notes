@@ -371,6 +371,40 @@ Since solving ILPs is NP-Hard in general, we can instead solve the LP relaxation
     \]
 \end{defn}
 
+\begin{exm}
+    Consider the following graph $G = (V,E)$.
+    \begin{center}
+        \begin{tikzpicture}[node distance={15mm}, thick, main/.style = {draw, circle}] 
+            \node[main] (1) {$v_1$};
+            \node[main] (2) [right of=1] {$v_2$};
+            \node[main] (3) [below right=1.6cm and 0.7cm of 5] {$v_3$};
+            \node[main] (4) [right of=3] {$v_4$};
+            \node[main] (5) [above right of=2] {$v_5$};
+            \draw (1) -- (2) node[midway, below] {$e_1$};
+            \draw (1) -- (5) node[midway, above left] {$e_4$};
+            \draw (2) -- (3) node[midway, below] {$e_2$};
+            \draw (2) -- (5) node[midway, left] {$e_5$};
+            \draw (3) -- (4) node[midway, below] {$e_3$};
+            \draw (3) -- (5) node[midway, right] {$e_6$};
+            \draw (4) -- (5) node[midway, above right] {$e_7$};
+        \end{tikzpicture}
+    \end{center}
+    The incidence matrix is
+    \[
+        A_G = \begin{bmatrix}
+                1 & 1 & 0 & 0 & 0 \\
+                0 & 1 & 1 & 0 & 0 \\
+                0 & 0 & 1 & 1 & 0 \\
+                1 & 0 & 0 & 0 & 1 \\
+                0 & 1 & 0 & 0 & 1 \\
+                0 & 0 & 1 & 0 & 1 \\
+                0 & 0 & 0 & 0 & 1
+              \end{bmatrix}.
+    \]
+    For a set $S = \{v_2, v_3, v_5\} \sse V$, the corresponding indicator vector is $x_S = \begin{bmatrix}0 & 1 & 1 & 0 & 1\end{bmatrix}^T$.
+    For a set $F = \{e_3, e_4\} \sse E$, the corresponding indicator vector is $y_F = \begin{bmatrix}0 & 0 & 1 & 1 & 0 & 0 & 0\end{bmatrix}^T$.
+\end{exm}
+
 \begin{rmk}
     \label{rmk:incidence-matrix-inequality-iffs}
     Note the following equivalencies about vector inequalities with the incidence matrix:
