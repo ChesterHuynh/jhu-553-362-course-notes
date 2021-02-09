@@ -334,6 +334,8 @@ Since solving ILPs is NP-Hard in general, we can instead solve the LP relaxation
 
 
 \subsection{IPs with the Incidence Matrix}
+\label{subsec:ips-with-incidence-matrix}
+
 \begin{defn}[Incidence matrix]
     \label{def:incidence-matrix}
     Let $G = (V,E)$ be a simple graph, and say $V = \{v_1, v_2, \dots, v_n\}$ and $E = \{e_1, e_2, \dots, e_m\}$. The \textit{incidence matrix} $A_G$ of $G$ is the $m \times n$ binary matrix such that
@@ -450,6 +452,8 @@ A second set of dual problems is the min edge cover and max independent set prob
 
 
 \subsection{IPs with Graph Colorings}
+\label{subsec:ips-with-graph-colorings}
+
 \begin{defn}[Vertex Coloring]
     \label{def:vertex-coloring}
     For a graph $G = (V,E)$, a \textit{(proper) vertex coloring} of $G$ is an assignment $\theta: V \rightarrow \{1, 2, 3, \dots\}$ of a color to each vertex such that every pair of adjacent vertices, the two vertices have different colors. The \textit{chromatic number} $\chi(G)$ for a graph $G$ is defined as the fewest number of colors needed to properly color $G$.
@@ -650,7 +654,7 @@ We formulate the min chromatic number and max clique problems, which are dual pr
     Observe the following graph that demonstrates a duality gap:
     \begin{center}
         \begin{tikzpicture}[node distance={15mm}, thick, main/.style = {draw, circle}]
-            \node[draw, regular polygon,regular polygon sides=5,minimum size=3cm] (p) {};
+            \node[draw, regular polygon,regular polygon sides=5,minimum size=2cm] (p) {};
                 \foreach\x in {1,...,5}{
                     \node[main=\x, fill=white] (p\x) at (p.corner \x){};
                 }
@@ -659,3 +663,111 @@ We formulate the min chromatic number and max clique problems, which are dual pr
     
     This graph has $\omega(G) = 2$, but $\chi(G) = 3$.
 \end{exm}
+
+
+\subsection{Magic Squares}
+\label{subsec:magic-squares}
+
+\begin{defn}
+    \label{def:magic-square}
+    An $n \times n$ \textit{magic square} is an $n \times n $ matrix $M$ such that all integers $1, 2, \dots, n^2$ are used once as entries and that all row and column sums are all equal.
+\end{defn}
+
+\begin{exm}
+    The following is a $3\times3$ magic square:
+    \[
+        M = \begin{bmatrix}
+                4 & 9 & 2 \\
+                3 & 5 & 7 \\
+                8 & 1 & 6
+            \end{bmatrix}
+    \]
+    Observe that the row and column sums are all 15.
+\end{exm}
+
+\begin{obs}
+    The row and column sum value $s$ for any arbitrary $n \times n$ magic square $M$ can be derived. Since the sum of all entries of $M$ must be $ns$, then 
+    \begin{alignat*}{2}
+        &                   & ns    &= 1 + 2 + \cdots + n^2  \\
+        &                   &       &=\frac{n^2(n^2+1)}{2} \\
+        & \Longrightarrow   & s     &= \frac{n(n^2+1)}{2}
+    \end{alignat*}
+\end{obs}
+
+\begin{obs}
+    There is no $2 \times 2$ magic square. If such a magic square existed, it would need to be symmetric for the row and column sums to be equal, but all entries must be distinct, therefore such a magic square would be a contradiction to the definition.
+\end{obs}
+
+\begin{defn}
+    For all $i = 1, 2, \dots, n$ $j = 1,2,\dots,n$, and $k = 1,2,\dots, n^2$, define
+    \[
+        x_{ijk} = \begin{cases}
+                    1 & \text{if } m_{ij} = k \\
+                    0 & \text{else}
+                  \end{cases}
+    \]
+    This tells us that the number of decision variables for a magic square problem is $n \cdot n \cdot n^2 = n^2$.
+\end{defn}
+
+\noindent We can encode the constraints for a magic square as follows:
+\begin{itemize}
+    \item Requiring only one integer entry for $m_{ij}$
+    \[
+        \forall i \in [n], j \in [n] \quad\quad \sum_{k=1}^{n^2} x_{ijk} = 1
+    \]
+    \item Requiring each $k \in [n^2]$ to appear exactly once in $M$
+    \[
+        \forall k \in [n^2] \quad\quad \sum_{i=1}^n\sum_{j=1}^n x_{ijk} = 1
+    \]
+    \item Requiring row sums to be $s$
+    \[
+        \forall i \in [n] \quad\quad \sum_{j=1}^n\sum_{k=1}^{n^2} kx_{ijk} = s
+    \]
+    \item Requiring column sums to be $s$
+    \[
+        \forall j \in [n] \quad\quad \sum_{i=1}^n\sum_{k=1}^{n^2} kx_{ijk} = s
+    \]
+\end{itemize}
+This gives a total of $2n^2 + 2n$ constraints, and since there are $n^4$ variables, the magic square problem is underconstrained.
+
+\noindent Formulating these constraints as part of an optimization problem, we have 
+    \[
+        Ax = b,
+    \]
+where $A \in \Z^{(2n^2+2n) \times n^4}$, $b \in \Z^{2n^2+2n}$, and $x \in \{0,1\}^{n^4}$. Note that the decision variables $x$ has been vectorized into a long vector, so $x_{ijk}$ corresponds to the index $(i-1) \cdot n \cdot n^2 + (j-1)\cdot n^2 + (k-1) + 1$ in the optimization problem formulation version of $x$.
+
+The following is MATLAB code to naively implement the above constraints
+\begin{lstlisting}
+    % magicSquare.m
+    %% one integer in each entry m_ij
+    row = 0
+    for i = 1:n
+        for j = 1:n
+            row = row + 1
+            for k = 1:n^2
+                A(row, (i-1)*n*n^2 + (j-1)*n^2 + (k-1) + 1) = 1
+            end
+            b(row) = 1
+        end
+    end
+    
+    %% all row sums are equal to s
+    for i = 1:n
+        row = row + 1
+        for j = 1:n
+            for k = 1:n^2
+                A(row, (i-1)*n*n^2 + (j-1)*n^2 + (k-1) + 1) = k
+            end
+        end
+        b(row) = s
+    end
+\end{lstlisting}
+
+In the case where we are partially given a magic square with set entries, then we can partition our constraint as follows
+\begin{alignat*}{2}
+    &&Ax &= b \\
+    &\Longrightarrow \quad & [\begin{array}{c|c} B & N\end{array}] \begin{bmatrix}
+    x_B \\ x_N \end{bmatrix} &= b \\
+    &\Longrightarrow \quad & Bx_B + Nx_N &= b \\
+    &\Longrightarrow \quad & \underbrace{B}_{``\hat{A}"}x_B &= \underbrace{b-Nx_N}_{``\hat{b}"}
+\end{alignat*}
